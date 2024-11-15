@@ -1,10 +1,10 @@
 clear;
 
 % Parent directory containing all runs
-parent_dir = 'C:\Users\sdabiri\OneDrive - Georgia Institute of Technology\BMED 8803 - Stat ML for Neural data\Project\preprocessed\s05';
+parent_dir = 'C:\Users\sdabiri\OneDrive - Georgia Institute of Technology\BMED 8803 - Stat ML for Neural data\Project\preprocessed\s14';
 
 % Directory containing the left and right EC masks
-mask_dir = 'C:\Users\sdabiri\OneDrive - Georgia Institute of Technology\BMED 8803 - Stat ML for Neural data\Project\Small_Dataset\s05';
+mask_dir = 'C:\Users\sdabiri\OneDrive - Georgia Institute of Technology\BMED 8803 - Stat ML for Neural data\Project\Small_Dataset\s14';
 
 % File names for the left and right EC masks
 left_mask = fullfile(mask_dir, 'r_LEC.nii');
@@ -73,12 +73,12 @@ for i = 1:length(run_dirs)
         smoothed_vol = spm_vol(smoothed_files{j});
         smoothed_data = spm_read_vols(smoothed_vol);
         
-        % Debugging step: Check dimensions of the resliced mask and smoothed image
-        disp('Dimensions of smoothed image:');
-        disp(size(smoothed_data));
-        
-        disp('Dimensions of resliced mask:');
-        disp(size(resliced_mask_data));
+%         % Debugging step: Check dimensions of the resliced mask and smoothed image
+%         disp('Dimensions of smoothed image:');
+%         disp(size(smoothed_data));
+%         
+%         disp('Dimensions of resliced mask:');
+%         disp(size(resliced_mask_data));
         
         % Apply the mask if dimensions match, otherwise display an error message
         if all(size(smoothed_data) == size(resliced_mask_data))

@@ -17,14 +17,17 @@ left_mask_data = spm_read_vols(left_mask_vol);
 right_mask_vol = spm_vol(right_mask);
 right_mask_data = spm_read_vols(right_mask_vol);
 
-% Combine the left and right masks into one
-combined_mask_data = (left_mask_data > 0) | (right_mask_data > 0); % Logical OR to combine
-combined_mask_data = double(combined_mask_data); % Convert to double for compatibility
-
-% Save the combined mask temporarily as a NIfTI file for resampling
-combined_mask_vol = left_mask_vol; % Copy metadata from one of the mask volumes
-combined_mask_vol.fname = fullfile(mask_dir, 'combined_mask.nii');
-spm_write_vol(combined_mask_vol, combined_mask_data);
+% Decided to just use right EC mask, since per Omar they got better
+% alignment.
+%
+% % Combine the left and right masks into one
+% combined_mask_data = (left_mask_data > 0) | (right_mask_data > 0); % Logical OR to combine
+% combined_mask_data = double(combined_mask_data); % Convert to double for compatibility
+% 
+% % Save the combined mask temporarily as a NIfTI file for resampling
+% combined_mask_vol = left_mask_vol; % Copy metadata from one of the mask volumes
+% combined_mask_vol.fname = fullfile(mask_dir, 'combined_mask.nii');
+% spm_write_vol(combined_mask_vol, combined_mask_data);
 
 % Resample the combined mask to match the dimensions of a single smoothed image
 % Identify one sample smoothed image file for resampling
@@ -34,10 +37,10 @@ sample_smooth_vol = spm_vol(fullfile(sample_smooth_dir, sample_smooth_file(1).na
 
 % Reslice the combined mask to match this sample smoothed image
 flags = struct('mean', false, 'which', 1, 'interp', 0);
-spm_reslice({sample_smooth_vol.fname, combined_mask_vol.fname}, flags);
+spm_reslice({sample_smooth_vol.fname, right_mask_vol.fname}, flags);
 
 % Load the resliced mask for use in all subsequent masking operations
-resliced_mask_file = fullfile(mask_dir, 'combined_mask.nii');
+resliced_mask_file = fullfile(mask_dir, 'r_REC.nii');
 resliced_mask_data = spm_read_vols(spm_vol(resliced_mask_file));
 
 % Get a list of all run subdirectories
@@ -55,7 +58,7 @@ for i = 1:length(run_dirs)
     end
     
     % Define an output directory within the current run's folder
-    run_output_dir = fullfile(parent_dir, run_dirs(i).name, 'masked_outputs');
+    run_output_dir = fullfile(parent_dir, run_dirs(i).name, 'masked_outputs_rightEC');
     if ~exist(run_output_dir, 'dir')
         mkdir(run_output_dir);
     end
@@ -97,6 +100,6 @@ for i = 1:length(run_dirs)
 end
 
 % Delete the temporary combined mask file
-delete(combined_mask_vol.fname);
+delete(right_mask_vol.fname);
 
 disp('All runs processed. Check each run folder for the masked_outputs directory.');

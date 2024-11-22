@@ -160,3 +160,4 @@ cython_debug/
 #.idea/
 applying_mask.asv
 gaussian_filter_smoothing.mat
+best_model.pth
